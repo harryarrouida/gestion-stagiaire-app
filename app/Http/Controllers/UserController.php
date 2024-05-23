@@ -30,7 +30,15 @@ class UserController extends Controller
 
     public function inscription(Request $request)
     {
-        $user = Stagiaire::create($request->all());
+
+        $user = Stagiaire::create([
+            'fname' => $request->fname,
+            'lname' => $request->lname,
+            'cin' => $request->cin,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'filliere_id' => $request->filliere_id
+        ]);
         if ($user) {
             auth()->guard('stagiaire')->login($user);
             return redirect()->route('stagiaire.upload.v');
@@ -47,7 +55,7 @@ class UserController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if (auth()->guard('stagiaire')->attempt($credentials)) {
-            return redirect()->route('stagiaire.checkStatus.v');
+            return redirect()->route('stagiaire.check.v');
         }
     }
 
